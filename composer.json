@@ -1,5 +1,5 @@
 {
-    "name": "lingxiang/workflow",
+    "name": "lingxiang/laravel-workflow",
     "description": "Workflow toolkit for Sami",
     "keywords": ["workflow", "laravel"],
     "license": "MIT",
