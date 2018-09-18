@@ -185,5 +185,19 @@ class Task extends Operation
 
     }
 
+    /**
+     * 生成配置对象实例
+     *
+     * @param $table
+     * @return TaskButton|TaskRole|TaskRoleAuth|TaskTypeAuth
+     * @throws WorkflowException
+     */
+    public function getTaskConfig($table)
+    {
+        //  实际使用时: \Task::getConfigObject('task_node_auth')->crudGetList();
+        $task_config = \Lingxiang\Workflow\TaskConfigFactory::createObject($table);
+
+        return $task_config;
+    }
 
 }
