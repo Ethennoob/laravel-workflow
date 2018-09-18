@@ -1,0 +1,26 @@
+{
+    "name": "lingxiang/workflow",
+    "description": "Workflow toolkit for Sami",
+    "keywords": ["workflow", "laravel"],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "lingxiang",
+            "email": "lingxiang@han-zi.cn"
+        }
+    ],
+    "require": {
+        "php": ">=7.0.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Lingxiang\\Workflow\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Lingxiang\\Workflow\\Tests\\": "tests/"
+        }
+    }
+
+}
