@@ -17,7 +17,7 @@ trait Log
      */
     public static function write($notice_header,$notice_body=''){
 
-        $notice_header = \GuzzleHttp\json_encode($notice_header);
+        $notice_header = \GuzzleHttp\json_encode($notice_header,JSON_UNESCAPED_UNICODE);
 
         $backtrace = debug_backtrace();
         array_shift($backtrace);

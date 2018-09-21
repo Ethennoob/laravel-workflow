@@ -14,21 +14,30 @@ interface ButtonInterface
     //设置任务id
     public function setTaskId($id);
 
+    //设置角色
+    public function setRole(array $role);
+
     //保存
-    public function save();
+    public function save(array $data);
 
     //提交
-    public function submit();
+    public function submit(array $data,callable $callback);
 
     //撤回
-    public function recall();
+    public function recall(callable $callback);
 
     //退回
-    public function goback();
+    public function goback(callable $callback);
 
     //取消
-    public function cancel();
+    public function cancel(callable $callback);
 
-    //完结
-    public function alldone();
+    //催办
+    public function reminder(callable $callback);
+
+    //转发
+    public function forward();
+
+    //代理
+    public function proxy();
 }

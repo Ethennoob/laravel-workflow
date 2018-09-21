@@ -185,5 +185,55 @@ class Task extends Operation
 
     }
 
+    /**
+     * 生成配置对象实例
+     *
+     * @param $table
+     * @return TaskButton|TaskRole|TaskRoleAuth|TaskTypeAuth
+     * @throws WorkflowException
+     */
+    public function getTaskConfig($table)
+    {
+        $task_config = \Lingxiang\Workflow\TaskConfigFactory::createObject($table);
 
+        return $task_config;
+    }
+
+
+    /**
+     * 获取当前节点当前角色所拥有的按钮
+     *
+     * @param $task_id
+     * @param $role_id
+     * @return \Illuminate\Support\Collection
+     * @throws WorkflowException
+     */
+    public function getButtons($task_id, $role_id)
+    {
+        $task =\DB::table('task')
+            ->select(['id','node'])
+            ->where('is_on', 1)
+            ->find($task_id);
+        if (!$task) {
+            throw new WorkflowException('任务不存在');
+        }
+
+        $task_button_auth =\DB::table('task_button_auth')
+            ->select(['id','button_id'])
+            ->where('is_on', 1)
+            ->where('node', $task->node)
+            ->where('auth_role', $role_id)
+            ->get();
+
+        $task_button_auth->each(function ($item) {
+
+            $task_button = \App\Model\TaskButtonModel::select(['id','type'])
+                ->where('is_on', 1)
+                ->find($item->button_id);
+
+            $item->button_name = $task_button->type;
+        });
+
+        return $task_button_auth;
+    }
 }
