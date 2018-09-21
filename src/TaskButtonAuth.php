@@ -2,7 +2,6 @@
 
 namespace Lingxiang\Workflow;
 
-<<<<<<< HEAD
 use Lingxiang\Workflow\Common\WorkflowException;
 
 class TaskButtonAuth extends TaskConfig
@@ -95,9 +94,4 @@ class TaskButtonAuth extends TaskConfig
 
         return true;
     }
-=======
-class TaskButtonAuth extends TaskConfig
-{
-    //
->>>>>>> 898065c11dc21184310fef1d6c359bb7744202e9
 }

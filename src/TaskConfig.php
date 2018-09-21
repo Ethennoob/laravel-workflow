@@ -12,11 +12,8 @@ abstract class TaskConfig implements TaskConfigInterface
 
     protected $time;
 
-<<<<<<< HEAD
     protected $task_type;
 
-=======
->>>>>>> 898065c11dc21184310fef1d6c359bb7744202e9
     public function __construct($table)
     {
         $this->table = \DB::table($table);
@@ -28,7 +25,6 @@ abstract class TaskConfig implements TaskConfigInterface
 
 
     /**
-<<<<<<< HEAD
      * 设置任务类型
      *
      * @param $task_type
@@ -42,8 +38,6 @@ abstract class TaskConfig implements TaskConfigInterface
     }
 
     /**
-=======
->>>>>>> 898065c11dc21184310fef1d6c359bb7744202e9
      * 所有任务配置数据
      *
      * @param array $data
