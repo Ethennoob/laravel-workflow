@@ -8,49 +8,221 @@
 
 namespace Lingxiang\Workflow;
 
+use Lingxiang\Workflow\Common\WorkflowException;
 use Lingxiang\Workflow\Common\Log;
 
 class Operation implements ButtonInterface
 {
     protected $task_id;
+    protected $task_instance;
+    protected $role_id_arr;
+    protected $role;
 
+    /**
+     * 设置任务id
+     * @param $id
+     * @return $this
+     */
     public function setTaskId($id)
     {
         $this->task_id = $id;
 
+        $this->task_instance = \DB::table('task')->find($this->task_id);
+
         return $this;
     }
 
-    public function save()
+    /**
+     * 设置操作者角色
+     * @param array $role 一维数组
+     * @return $this
+     * @throws WorkflowException
+     */
+    public function setRole(array $role = array())
     {
-        $list = array('name'=>'测试保存');
-        Log::write($list,'保存');
+        if (empty($role)){
+            throw new WorkflowException('无权限操作');
+        }
+
+        $this->role = $role;
+
+        $this->role_id_arr = \DB::table('task_role')->whereIn('role',$role)->get()
+            ->map(function($item){
+                return $item->id;
+            })->toArray();
+
+        return $this;
+    }
+
+    /**
+     * 保存
+     * @param array $data 保存的数据,供记录日志
+     * @return bool
+     */
+    public function save(array $data = array())
+    {
+        Log::write($data,'保存，任务id:'.$this->task_id);
         return true;
     }
 
-    public function submit($data = [])
+    /**
+     * 提交
+     * @param array $data
+     * @param callable|null $callback 回调函数
+     * @return bool
+     * @throws WorkflowException
+     */
+    public function submit(array $data = [], callable $callback = null)
     {
-        // TODO: Implement submit() method.
+        $button_id = 2;//定死
+
+        // 查询该按钮是否有权限
+        $direction_node = \DB::table('task_button_auth')->where('button_id',$button_id)
+            ->whereIn('auth_role',$this->role_id_arr)
+            ->where('node',$this->task_instance->node)
+            ->value('direction_node');
+
+        if (!$direction_node){
+            throw new WorkflowException('无权限操作');
+        }
+
+        //将节点状态改变
+        \DB::table('task')->where('id',$this->task_id)->update([
+            'node' => $direction_node,
+            'updated_at' => $this->time
+        ]);
+
+        Log::write($this->role,'提交，任务id:'.$this->task_id);
+
+        //回调
+        if ($callback){
+            call_user_func($callback,$direction_node);
+        }
+
+        return true;
     }
 
-    public function recall()
+    /**
+     * 撤回
+     * @param callable|null $callback
+     * @throws WorkflowException
+     */
+    public function recall(callable $callback = null)
     {
-        // TODO: Implement recall() method.
+        $button_id = 5;//定死
+
+        // 查询该按钮是否有权限
+        $direction_node = \DB::table('task_button_auth')->where('button_id',$button_id)
+            ->whereIn('auth_role',$this->role_id_arr)
+            ->where('node',$this->task_instance->node)
+            ->value('direction_node');
+
+        if (!$direction_node){
+            throw new WorkflowException('无权限操作');
+        }
+
+        //将节点状态改变
+        \DB::table('task')->where('id',$this->task_id)->update([
+            'node' => $direction_node,
+            'updated_at' => $this->time
+        ]);
+
+        Log::write($this->role,'撤回，任务id:'.$this->task_id);
+
+        //回调
+        if ($callback){
+            call_user_func($callback,$direction_node);
+        }
     }
 
-    public function goback()
+    /**
+     * 退回
+     * @param callable|null $callback
+     * @throws WorkflowException
+     */
+    public function goback(callable $callback = null)
     {
-        // TODO: Implement goback() method.
+        $button_id = 6;//定死
+
+        // 查询该按钮是否有权限
+        $direction_node = \DB::table('task_button_auth')->where('button_id',$button_id)
+            ->whereIn('auth_role',$this->role_id_arr)
+            ->where('node',$this->task_instance->node)
+            ->value('direction_node');
+
+        if (!$direction_node){
+            throw new WorkflowException('无权限操作');
+        }
+
+        //将节点状态改变
+        \DB::table('task')->where('id',$this->task_id)->update([
+            'node' => $direction_node,
+            'updated_at' => $this->time
+        ]);
+
+        Log::write($this->role,'退回，任务id:'.$this->task_id);
+
+        //回调
+        if ($callback){
+            call_user_func($callback,$direction_node);
+        }
     }
 
-    public function cancel()
+    /**
+     * 取消
+     * @param callable|null $callback
+     * @throws WorkflowException
+     */
+    public function cancel(callable $callback = null)
     {
-        // TODO: Implement cancel() method.
+        $button_id = 6;//定死
+
+        // 查询该按钮是否有权限
+        $direction_node = \DB::table('task_button_auth')->where('button_id',$button_id)
+            ->whereIn('auth_role',$this->role_id_arr)
+            ->where('node',$this->task_instance->node)
+            ->value('direction_node');
+
+        if (!$direction_node){
+            throw new WorkflowException('无权限操作');
+        }
+
+        //将节点状态改变
+        \DB::table('task')->where('id',$this->task_id)->update([
+            'node' => $direction_node,
+            'updated_at' => $this->time
+        ]);
+
+        Log::write($this->role,'取消，任务id:'.$this->task_id);
+
+        //回调
+        if ($callback){
+            call_user_func($callback,$direction_node);
+        }
     }
 
-    public function alldone()
+    /**
+     * 催办
+     * @param callable|null $callback
+     */
+    public function reminder(callable $callback = null)
     {
-        // TODO: Implement alldone() method.
+        Log::write($this->role,'催办，任务id:'.$this->task_id);
+
+        //回调
+        if ($callback){
+            call_user_func($callback);
+        }
+    }
+
+    public function forward()
+    {
+        // TODO: Implement reminder() method.
+    }
+
+    public function proxy()
+    {
+        // TODO: Implement reminder() method.
     }
 
 }
