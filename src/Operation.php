@@ -87,10 +87,10 @@ class Operation implements ButtonInterface
         }
 
         //将节点状态改变
-        //\DB::table('task')->where('id',$this->task_id)->update([
-        //    'node' => $direction_node,
-        //    'updated_at' => $this->time
-        //]);
+        \DB::table('task')->where('id',$this->task_id)->update([
+            'node' => $direction_node,
+            'updated_at' => $this->time
+        ]);
 
         //查询该节点方向信息中的提醒消息角色id
         $notice = \DB::table('task_node_direction')->where('task_type',$this->task_instance->type)
