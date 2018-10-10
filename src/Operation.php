@@ -157,7 +157,7 @@ class Operation implements ButtonInterface
 
         //回调
         if ($callback){
-            call_user_func($callback,[$direction_node,$notice_role]);
+            call_user_func_array($callback,[$direction_node,$notice_role]);
         }
     }
 
@@ -203,7 +203,7 @@ class Operation implements ButtonInterface
 
         //回调
         if ($callback){
-            call_user_func($callback,[$direction_node,$notice_role]);
+            call_user_func_array($callback,[$direction_node,$notice_role]);
         }
     }
 
@@ -249,7 +249,7 @@ class Operation implements ButtonInterface
 
         //回调
         if ($callback){
-            call_user_func($callback,[$direction_node,$notice_role]);
+            call_user_func_array($callback,[$direction_node,$notice_role]);
         }
     }
 
