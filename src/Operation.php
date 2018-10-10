@@ -95,12 +95,14 @@ class Operation implements ButtonInterface
         //查询该节点方向信息中的提醒消息角色id
         $notice = \DB::table('task_node_direction')->where('task_type',$this->task_instance->type)
             ->where('node',$this->task_instance->node)
-            ->where('direction_node',$this->task_instance->node)
+            ->where('direction_node',$this->task_instance->direction_node)
             ->where('button_id',$button_id)
             ->first();
 
         if (!empty($notice) && !empty($notice->notice_role)){
             $notice_role = explode(';',$notice->notice_role);
+        }else{
+            $notice_role = [];
         }
 
         Log::write($this->role,'提交，任务id:'.$this->task_id);
@@ -147,6 +149,8 @@ class Operation implements ButtonInterface
 
         if (!empty($notice) && !empty($notice->notice_role)){
             $notice_role = explode(';',$notice->notice_role);
+        }else{
+            $notice_role = [];
         }
 
         Log::write($this->role,'撤回，任务id:'.$this->task_id);
@@ -191,6 +195,8 @@ class Operation implements ButtonInterface
 
         if (!empty($notice) && !empty($notice->notice_role)){
             $notice_role = explode(';',$notice->notice_role);
+        }else{
+            $notice_role = [];
         }
 
         Log::write($this->role,'退回，任务id:'.$this->task_id);
@@ -235,6 +241,8 @@ class Operation implements ButtonInterface
 
         if (!empty($notice) && !empty($notice->notice_role)){
             $notice_role = explode(';',$notice->notice_role);
+        }else{
+            $notice_role = [];
         }
 
         Log::write($this->role,'取消，任务id:'.$this->task_id);
