@@ -95,7 +95,7 @@ class Operation implements ButtonInterface
         //查询该节点方向信息中的提醒消息角色id
         $notice = \DB::table('task_node_direction')->where('task_type',$this->task_instance->type)
             ->where('node',$this->task_instance->node)
-            ->where('direction_node',$this->task_instance->direction_node)
+            ->where('direction_node',$direction_node)
             ->where('button_id',$button_id)
             ->first();
 
@@ -143,7 +143,7 @@ class Operation implements ButtonInterface
         //查询该节点方向信息中的提醒消息角色id
         $notice = \DB::table('task_node_direction')->where('task_type',$this->task_instance->type)
             ->where('node',$this->task_instance->node)
-            ->where('direction_node',$this->task_instance->direction_node)
+            ->where('direction_node',$direction_node)
             ->where('button_id',$button_id)
             ->first();
 
@@ -189,7 +189,7 @@ class Operation implements ButtonInterface
         //查询该节点方向信息中的提醒消息角色id
         $notice = \DB::table('task_node_direction')->where('task_type',$this->task_instance->type)
             ->where('node',$this->task_instance->node)
-            ->where('direction_node',$this->task_instance->direction_node)
+            ->where('direction_node',$direction_node)
             ->where('button_id',$button_id)
             ->first();
 
@@ -235,7 +235,7 @@ class Operation implements ButtonInterface
         //查询该节点方向信息中的提醒消息角色id
         $notice = \DB::table('task_node_direction')->where('task_type',$this->task_instance->type)
             ->where('node',$this->task_instance->node)
-            ->where('direction_node',$this->task_instance->direction_node)
+            ->where('direction_node',$direction_node)
             ->where('button_id',$button_id)
             ->first();
 
