@@ -214,7 +214,7 @@ class Operation implements ButtonInterface
      */
     public function cancel(callable $callback = null)
     {
-        $button_id = 6;//定死
+        $button_id = 3;//定死
 
         // 查询该按钮是否有权限
         $direction_node = \DB::table('task_button_auth')->where('button_id',$button_id)
