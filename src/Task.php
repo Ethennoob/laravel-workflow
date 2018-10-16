@@ -25,6 +25,7 @@ class Task extends Operation
     public $node;
     public $owner_id;
     public $owner_type;
+    public $owner_name;
     public $user_limit_time;
     public $time;
     public $errorMsg;
@@ -133,6 +134,18 @@ class Task extends Operation
     }
 
     /**
+     * 设置任务来源冗余名字
+     * @param $owner_name
+     * @return $this
+     */
+    public function setOwnerName($owner_name)
+    {
+        $this->owner_name = $owner_name;
+
+        return $this;
+    }
+
+    /**
      * 设置该任务环节用户的完成截止时间
      * @param $user_limit_time
      * @return $this
@@ -165,6 +178,7 @@ class Task extends Operation
             'node' => $this->node,
             'owner_id' => $this->owner_id,
             'owner_type' => $this->owner_type,
+            'owner_name' => isset($this->owner_name)?$this->owner_name:'未知',
             'user_limit_time' => isset($this->user_limit_time)?$this->user_limit_time:$complete_time,
             'complete_time' => $complete_time,
             'created_at' => $this->time,
