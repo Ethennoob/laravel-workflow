@@ -78,6 +78,7 @@ class Operation implements ButtonInterface
 
         // 查询该按钮是否有权限
         $direction_node = \DB::table('task_button_auth')->where('button_id',$button_id)
+            ->where('task_type',$this->task_instance->type)
             ->whereIn('auth_role',$this->role_id_arr)
             ->where('node',$this->task_instance->node)
             ->value('direction_node');
@@ -105,7 +106,7 @@ class Operation implements ButtonInterface
             $notice_role = [];
         }
 
-        Log::write($this->role,'提交，任务id:'.$this->task_id);
+        Log::write([$this->role, $data],'提交，任务id:'.$this->task_id);
 
         //回调
         if ($callback){
@@ -126,6 +127,7 @@ class Operation implements ButtonInterface
 
         // 查询该按钮是否有权限
         $direction_node = \DB::table('task_button_auth')->where('button_id',$button_id)
+            ->where('task_type',$this->task_instance->type)
             ->whereIn('auth_role',$this->role_id_arr)
             ->where('node',$this->task_instance->node)
             ->value('direction_node');
@@ -172,6 +174,7 @@ class Operation implements ButtonInterface
 
         // 查询该按钮是否有权限
         $direction_node = \DB::table('task_button_auth')->where('button_id',$button_id)
+            ->where('task_type',$this->task_instance->type)
             ->whereIn('auth_role',$this->role_id_arr)
             ->where('node',$this->task_instance->node)
             ->value('direction_node');
@@ -218,6 +221,7 @@ class Operation implements ButtonInterface
 
         // 查询该按钮是否有权限
         $direction_node = \DB::table('task_button_auth')->where('button_id',$button_id)
+            ->where('task_type',$this->task_instance->type)
             ->whereIn('auth_role',$this->role_id_arr)
             ->where('node',$this->task_instance->node)
             ->value('direction_node');
@@ -264,6 +268,102 @@ class Operation implements ButtonInterface
         //回调
         if ($callback){
             call_user_func($callback);
+        }
+    }
+
+    /**
+     * 继续签署(定校书需求)
+     * @param callable|null $callback
+     * @throws WorkflowException
+     */
+    public function continue_sign(callable $callback = null)
+    {
+        $button_id = 11;//定死
+
+        // 查询该按钮是否有权限
+        $direction_node = \DB::table('task_button_auth')->where('button_id',$button_id)
+            ->where('task_type',$this->task_instance->type)
+            ->whereIn('auth_role',$this->role_id_arr)
+            ->where('node',$this->task_instance->node)
+            ->value('direction_node');
+
+
+        if (!$direction_node){
+            throw new WorkflowException('无权限操作');
+        }
+
+        //将节点状态改变
+        \DB::table('task')->where('id',$this->task_id)->update([
+            'node' => $direction_node,
+            'updated_at' => $this->time
+        ]);
+
+        //查询该节点方向信息中的提醒消息角色id
+        $notice = \DB::table('task_node_direction')->where('task_type',$this->task_instance->type)
+            ->where('node',$this->task_instance->node)
+            ->where('direction_node',$direction_node)
+            ->where('button_id',$button_id)
+            ->first();
+
+        if (!empty($notice) && !empty($notice->notice_role)){
+            $notice_role = explode(';',$notice->notice_role);
+        }else{
+            $notice_role = [];
+        }
+
+        Log::write($this->role,'提交给客户继续签署，任务id:'.$this->task_id);
+
+        //回调
+        if ($callback){
+            call_user_func_array($callback,[$direction_node,$notice_role]);
+        }
+    }
+
+    /**
+     * 审核失败(定校书需求)
+     * @param callable|null $callback
+     * @throws WorkflowException
+     */
+    public function fail(callable $callback = null)
+    {
+        $button_id = 13;//定死
+
+        // 查询该按钮是否有权限
+        $direction_node = \DB::table('task_button_auth')->where('button_id',$button_id)
+            ->where('task_type',$this->task_instance->type)
+            ->whereIn('auth_role',$this->role_id_arr)
+            ->where('node',$this->task_instance->node)
+            ->value('direction_node');
+
+
+        if (!$direction_node){
+            throw new WorkflowException('无权限操作');
+        }
+
+        //将节点状态改变
+        \DB::table('task')->where('id',$this->task_id)->update([
+            'node' => $direction_node,
+            'updated_at' => $this->time
+        ]);
+
+        //查询该节点方向信息中的提醒消息角色id
+        $notice = \DB::table('task_node_direction')->where('task_type',$this->task_instance->type)
+            ->where('node',$this->task_instance->node)
+            ->where('direction_node',$direction_node)
+            ->where('button_id',$button_id)
+            ->first();
+
+        if (!empty($notice) && !empty($notice->notice_role)){
+            $notice_role = explode(';',$notice->notice_role);
+        }else{
+            $notice_role = [];
+        }
+
+        Log::write($this->role,'审核失败，任务id:'.$this->task_id);
+
+        //回调
+        if ($callback){
+            call_user_func_array($callback,[$direction_node,$notice_role]);
         }
     }
 
